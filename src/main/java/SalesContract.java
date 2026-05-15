@@ -9,18 +9,18 @@ public class SalesContract extends Contract{
         double saleTax = vehicle.getPrice() * 0.05;
         double recordingFee = 100;
         double processingFee;
-        double finalprice = 0;
+        double finalPrice = 0;
         if (vehicle.getPrice() <= 10000) {
             processingFee = 295;
         } else {
             processingFee = 495;
         }
         if (finance) {
-            finalprice = getMonthlyPayment(vehicle, loan);
+            finalPrice = getMonthlyPayment(vehicle, loan);
         } else {
-            finalprice = vehicle.getPrice() + saleTax + recordingFee + processingFee;
+            finalPrice = vehicle.getPrice() + saleTax + recordingFee + processingFee;
         }
-        return finalprice;
+        return finalPrice;
     }
 
     @Override
