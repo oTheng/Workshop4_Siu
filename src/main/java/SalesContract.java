@@ -5,12 +5,14 @@ public class SalesContract extends Contract{
     }
 
     @Override
-    void getTotalPrice() {
+    double getTotalPrice(Vehicle vehicle, boolean finance, double loan) {
 
+        return 0;
     }
 
     @Override
-    void getMonthlyPayment() {
+    double getMonthlyPayment(Vehicle vehicle, double loan) {
 
+        return 0;
     }
 }

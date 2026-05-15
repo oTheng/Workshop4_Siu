@@ -42,6 +42,7 @@ public abstract class Contract {
     public void setVehicleSold(double vehicleSold) {
         this.vehicleSold = vehicleSold;
     }
-    abstract void getTotalPrice();
-    abstract void getMonthlyPayment();
+    abstract double getTotalPrice(Vehicle vehicle, boolean finance, double loan);
+
+    abstract double getMonthlyPayment(Vehicle vehicle, double loan);
 }
