@@ -110,7 +110,104 @@ public class UserInterface {
                 case "0":
                     System.exit(0);
                 case "S":
+                    List<Vehicle> vehiclesList1 = dealership.getAllVehicles();
+
+                    System.out.println("Enter the Vehicle VIN Number you want to buy:");
+                    int saleVin = Integer.parseInt(scanner.nextLine());
+
+                    Vehicle vehicleToBuy = null;
+
+                    for (Vehicle vehicleItem : vehiclesList1) {
+                        if (vehicleItem.getVin() == saleVin) {
+                            vehicleToBuy = vehicleItem;
+                            break;
+                        }
+                    }
+
+                    if (vehicleToBuy != null) {
+                        System.out.println("Enter customer name:");
+                        String customerName = scanner.nextLine();
+
+                        System.out.println("Enter customer email:");
+                        String customerEmail = scanner.nextLine();
+
+                        System.out.println("Enter date of contract:");
+                        String customerDate = scanner.nextLine();
+
+                        System.out.println("Finance? YES or NO:");
+                        String financeInput = scanner.nextLine().toUpperCase();
+                        boolean finance = financeInput.equals("YES") || financeInput.equals("Y");
+
+                        double loanAmount = 0;
+
+                        if (finance) {
+                            System.out.println("Enter loan amount:");
+                            loanAmount = Double.parseDouble(scanner.nextLine());
+                        }
+
+                        SalesContract salesContract = new SalesContract(
+                                customerDate,
+                                customerName,
+                                customerEmail,
+                                vehicleToBuy,
+                                finance,
+                                loanAmount
+                        );
+
+                        contractFileManager.saveContract(salesContract);
+
+                        vehiclesList1.remove(vehicleToBuy);
+
+                        DealershipFileManager.rewriteVehicle(vehiclesList1);
+                        System.out.println("Vehicle has been sold and contract saved.");
+                    } else {
+                        System.out.println("Vehicle not found.");
+                    }
+
+                    break;
                 case "L":
+                    List<Vehicle> vehiclesList2 = dealership.getAllVehicles();
+
+                    System.out.println("Enter the Vehicle VIN Number you want to lease:");
+                    int leaseVin = Integer.parseInt(scanner.nextLine());
+
+                    Vehicle vehicleToLease = null;
+                    int indexToRemove = -1;
+
+                    for (int i = 0; i < vehiclesList2.size(); i++) {
+                        if (vehiclesList2.get(i).getVin() == leaseVin) {
+                            vehicleToLease = vehiclesList2.get(i);
+                            indexToRemove = i;
+                            break;
+                        }
+                    }
+
+                    if (vehicleToLease != null) {
+                        System.out.println("Enter customer name:");
+                        String customerName = scanner.nextLine();
+
+                        System.out.println("Enter customer email:");
+                        String customerEmail = scanner.nextLine();
+
+                        System.out.println("Enter date of contract:");
+                        String customerDate = scanner.nextLine();
+
+                        LeaseContract leaseContract = new LeaseContract(
+                                customerDate,
+                                customerName,
+                                customerEmail,
+                                vehicleToLease
+                        );
+
+                        contractFileManager.saveContract(leaseContract);
+
+                        vehiclesList2.remove(indexToRemove);
+                        DealershipFileManager.rewriteVehicle(vehiclesList2);
+
+                        System.out.println("Vehicle has been leased and contract saved.");
+                    } else {
+                        System.out.println("Vehicle not found.");
+                    }
                     break;
                 default:
                     System.out.println("Error 404");

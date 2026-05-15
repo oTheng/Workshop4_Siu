@@ -1,49 +1,92 @@
-public class SalesContract extends Contract{
+import java.util.Scanner;
 
-    public SalesContract(String dateOfContract, String customerName, String customerEmail, double vehicleSold) {
+public class SalesContract extends Contract {
+    private boolean finance;
+    private double loanAmount;
+
+    public SalesContract(String dateOfContract, String customerName, String customerEmail, Vehicle vehicleSold, boolean finance, double loanAmount) {
         super(dateOfContract, customerName, customerEmail, vehicleSold);
+        this.finance = finance;
+        this.loanAmount = loanAmount;
     }
 
     @Override
     double getTotalPrice(Vehicle vehicle, boolean finance, double loan) {
-        double saleTax = vehicle.getPrice() * 0.05;
-        double recordingFee = 100;
-        double processingFee;
-        double finalPrice = 0;
-        if (vehicle.getPrice() <= 10000) {
-            processingFee = 295;
-        } else {
-            processingFee = 495;
-        }
-        if (finance) {
-            finalPrice = getMonthlyPayment(vehicle, loan);
-        } else {
-            finalPrice = vehicle.getPrice() + saleTax + recordingFee + processingFee;
-        }
-        return finalPrice;
+        return vehicle.getPrice()
+                + getSalesTax()
+                + getRecordingFee()
+                + getProcessingFee();
     }
 
     @Override
     double getMonthlyPayment(Vehicle vehicle, double loan) {
-        double monthlyCalculation = 0;
-        if (loan < vehicle.getPrice()) {
-            System.out.println("You need to take out a bigger loan!");
-        } else {
-            double annualInterestRate;
-            int months;
-            if (loan >= 10000) {
-                annualInterestRate = 0.0425;
-                months = 48;
-            } else {
-                annualInterestRate = 0.0525;
-                months = 24;
-            }
-
-            double monthlyRate = annualInterestRate / 12;
-
-            monthlyCalculation = loan * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+        if (!finance) {
+            return 0;
         }
 
-        return monthlyCalculation;
+        double totalPrice = getTotalPrice(vehicle, finance, loan);
+
+        if (loan < totalPrice) {
+            System.out.println("You need to take out a bigger loan!");
+            return 0;
+        }
+
+        double annualInterestRate;
+        int months;
+
+        if (loan >= 10000) {
+            annualInterestRate = 0.0425;
+            months = 48;
+        } else {
+            annualInterestRate = 0.0525;
+            months = 24;
+        }
+
+        double monthlyRate = annualInterestRate / 12;
+
+        return loan *
+                (monthlyRate * Math.pow(1 + monthlyRate, months)) /
+                (Math.pow(1 + monthlyRate, months) - 1);
+    }
+
+    public double getSalesTax() {
+        return vehicleSold.getPrice() * 0.05;
+    }
+
+    public double getRecordingFee() {
+        return 100;
+    }
+
+    public double getProcessingFee() {
+        if (vehicleSold.getPrice() < 10000) {
+            return 295;
+        }
+        return 495;
+    }
+
+    @Override
+    public String toFileString() {
+        double monthlyPayment = finance ? getMonthlyPayment(vehicleSold, loanAmount) : 0;
+
+        return String.format(
+                "SALE|%s|%s|%s|%d|%d|%s|%s|%s|%s|%d|%.2f|%.2f|%.2f|%.2f|%.2f|%s|%.2f",
+                dateOfContract,
+                customerName,
+                customerEmail,
+                vehicleSold.getVin(),
+                vehicleSold.getYear(),
+                vehicleSold.getMake(),
+                vehicleSold.getModel(),
+                vehicleSold.getVehicleType(),
+                vehicleSold.getColor(),
+                vehicleSold.getOdometer(),
+                vehicleSold.getPrice(),
+                getSalesTax(),
+                getRecordingFee(),
+                getProcessingFee(),
+                getTotalPrice(vehicleSold, finance, loanAmount),
+                finance ? "YES" : "NO",
+                monthlyPayment
+        );
     }
 }

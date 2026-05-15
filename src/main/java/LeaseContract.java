@@ -1,6 +1,8 @@
+import java.util.Scanner;
+
 public class LeaseContract extends Contract {
 
-    public LeaseContract(String dateOfContract, String customerName, String customerEmail, double vehicleSold) {
+    public LeaseContract(String dateOfContract, String customerName, String customerEmail, Vehicle vehicleSold) {
         super(dateOfContract, customerName, customerEmail, vehicleSold);
     }
 
@@ -23,4 +25,25 @@ public class LeaseContract extends Contract {
 
         return leaseTotalPrice * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
     }
+
+    @Override
+    public String toFileString() {
+        return "LEASE|" +
+                dateOfContract + "|" +
+                customerName + "|" +
+                customerEmail + "|" +
+                vehicleSold.getVin() + "|" +
+                vehicleSold.getYear() + "|" +
+                vehicleSold.getMake() + "|" +
+                vehicleSold.getModel() + "|" +
+                vehicleSold.getVehicleType() + "|" +
+                vehicleSold.getColor() + "|" +
+                vehicleSold.getOdometer() + "|" +
+                vehicleSold.getPrice() + "|" +
+                vehicleSold.getPrice()*0.5 + "|" +
+                vehicleSold.getPrice()*0.07 + "|" +
+                getTotalPrice(vehicleSold, true, 0) + "|" +
+                getMonthlyPayment(vehicleSold, 0);
+    }
+
 }
