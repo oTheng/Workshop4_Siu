@@ -1,8 +1,10 @@
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 public class UserInterface {
     Dealership dealership = DealershipFileManager.getDealership();
+    ContractFileManager contractFileManager = new ContractFileManager();
     Scanner scanner = new Scanner(System.in);
     void display(){
         while (true){
@@ -17,7 +19,10 @@ public class UserInterface {
             System.out.println("8. Add Vehicle");
             System.out.println("9. Remove Vehicle");
             System.out.println("0. Exit");
+            System.out.println("S. Sale");
+            System.out.println("L. Lease");
             String userInput = scanner.nextLine();
+            userInput = userInput.toUpperCase();
             switch (userInput){
                 case "1":
                     System.out.println("Enter the Price Min: ");
@@ -104,6 +109,9 @@ public class UserInterface {
                     break;
                 case "0":
                     System.exit(0);
+                case "S":
+                case "L":
+                    break;
                 default:
                     System.out.println("Error 404");
             }
